@@ -1,25 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+// import AccountDetails from "./pages/AccountDetails";
+import { HashRouter, Route } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import { AppProvider } from "./store/context";
+import Accounts from "./pages/accounts/Accounts";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <HashRouter>
+      <AppProvider>
+        <Layout>
+          <Route path="/accounts/:ronin?" component={Accounts} />
+          {/* <Route path="/account/:ronin" component={AccountDetails} /> */}
+        </Layout>
+      </AppProvider>
+    </HashRouter>
   );
 }
 
