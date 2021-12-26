@@ -6,51 +6,47 @@ import React, {
   useReducer,
   useState,
 } from "react";
-import { ProductActions, accountReducer } from "./reducer";
+import {
+  ProductActions,
+  accountReducer,
+  SLPPriceActions,
+  slpPriceReducer,
+} from "./reducer";
 import axios from "axios";
-import { AccountResponse } from "../types/requests/account";
+import { Account } from "../types/account";
 
 type State = {
-  accounts: AccountResponse[];
+  accounts: Account[];
+  slpPrice: number;
 };
 
 const initialState = {
   accounts: [],
+  slpPrice: 0,
 };
 
-const AppContext = createContext<{ state: State; dispatch: Dispatch<any> }>({
+const AppContext = createContext<{
+  state: State;
+  dispatch: Dispatch<ProductActions | SLPPriceActions>;
+}>({
   state: initialState,
   dispatch: () => null,
 });
 
-const mainReducer = ({ accounts }: State, action: ProductActions) => ({
+const mainReducer = (
+  { accounts, slpPrice }: State,
+  action: ProductActions | SLPPriceActions
+) => ({
   accounts: accountReducer(accounts, action),
+  slpPrice: slpPriceReducer(slpPrice, action),
 });
-
-// const backendURL = "https://axie-dashboard-api.herokuapp.com";
-const backendURL = "http://localhost:5000";
 
 const AppProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(mainReducer, initialState);
-  const [loading, setLoading] = useState(true);
-  const [accounts, setAccounts] = useState<State["accounts"]>([]);
 
-  useEffect(() => {
-    axios
-      .get<AccountResponse[]>(`${backendURL}/accounts`)
-      .then((response) => {
-        setAccounts(response.data);
-      })
-      .catch((error) => {
-        console.log("error", error.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
   return (
-    <AppContext.Provider value={{ state: { accounts }, dispatch }}>
-      {!loading && children}
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
     </AppContext.Provider>
   );
 };

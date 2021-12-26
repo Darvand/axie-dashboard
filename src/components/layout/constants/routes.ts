@@ -26,7 +26,7 @@ export const routes: RouteType[] = [
     label: "Pagos",
   },
   {
-    path: "/scholarships",
+    path: "/scholars",
     icon: BsFillPersonBadgeFill,
     label: "Becados",
   },

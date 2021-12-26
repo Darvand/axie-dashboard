@@ -1,4 +1,4 @@
-export interface DailyResponse {
+export interface Daily {
   pvpWin: number;
   pvpLose: number;
   pvpDraw: number;

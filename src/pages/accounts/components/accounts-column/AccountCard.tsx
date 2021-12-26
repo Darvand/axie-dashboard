@@ -1,9 +1,10 @@
 import React from "react";
 import { useHistory, useParams } from "react-router";
+import { Account } from "../../../../types/account";
 import { AccountResponse } from "../../../../types/requests/account";
 
 interface Props {
-  account: AccountResponse;
+  account: Account;
 }
 
 const AccountCard = ({ account }: Props) => {
@@ -18,6 +19,7 @@ const AccountCard = ({ account }: Props) => {
     roninWithoutPrefix.length - 5,
     roninWithoutPrefix.length
   );
+  console.log("account", account);
   return (
     <div
       className={`group w-full px-4 py-2 text-primary-text cursor-pointer flex flex-col gap-2 hover:bg-active ${
@@ -26,11 +28,11 @@ const AccountCard = ({ account }: Props) => {
       onClick={() => history.push(`/accounts/${account.roninAddress}`)}
     >
       <div className="flex gap-2 text-2xl font-bold">
-        <span>{account.accountDaily[0].totalSLP}</span>
+        <span>{account.inGameSLP}</span>
         <span>SLP</span>
       </div>
       <div className=" flex flex-col">
-        <h1 className="text-primary-text text-lg">{`Account Nombre`}</h1>
+        <h1 className="text-primary-text text-lg">{account.scholar.name}</h1>
         <p
           className={`text-base group-hover:text-primary-text ${
             isSelected ? "text-primary-text " : "text-secondary-text "

@@ -33,6 +33,7 @@ const SideBar = (props: Props) => {
         <section>
           {routes.map((route) => (
             <SideBarButton
+              key={route.label}
               onClick={pushButton}
               isActive={route.path === selectedTab}
               {...route}

@@ -17,12 +17,13 @@ module.exports = {
     },
     colors: {
       gray: colors.coolGray,
-      primary: '#252B40',
-      secondary: '#1E2437',
+      primary: '#16233C',
+      secondary: '#2C4059',
       third: '#3F4966',
       'primary-text': '#E7E8EB',
       'secondary-text': '#626A81',
-      active: '#5D7ADD'
+      active: '#5D7ADD',
+      error: colors.red
     },
   },
   variants: {

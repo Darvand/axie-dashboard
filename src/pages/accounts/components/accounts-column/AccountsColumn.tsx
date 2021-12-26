@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
 import { AiOutlinePlus } from "react-icons/ai";
-import { AccountResponse } from "../../../../types/requests/account";
+import { Account } from "../../../../types/account";
 import AccountCard from "./AccountCard";
 import Dropdown from "./Dropdown";
 
 interface Props {
-  accounts: AccountResponse[];
+  accounts: Account[];
 }
 
 const AccountsColumn = ({ accounts }: Props) => {

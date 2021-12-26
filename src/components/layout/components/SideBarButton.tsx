@@ -13,8 +13,9 @@ const SideBarButton = ({ isActive, icon, path, label, onClick }: Props) => {
         isActive ? "border-l-4" : "border-l-0"
       }`}
       onClick={() => onClick(path)}
+      key={label}
     >
-      {icon}
+      {icon({})}
       <span>{label}</span>
     </button>
   );

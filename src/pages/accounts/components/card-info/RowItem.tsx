@@ -8,7 +8,7 @@ export interface RowItemProps {
 
 const RowItem = ({ title, value, isStatus = false }: RowItemProps) => {
   return (
-    <li className="flex justify-between w-full">
+    <li className="flex justify-between w-full" key={title}>
       <h2 className="text-secondary-text text-base">{title}</h2>
       <h1 className="text-base text-primary-text">
         {isStatus ? (

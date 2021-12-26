@@ -5,16 +5,22 @@ import { HashRouter, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import { AppProvider } from "./store/context";
 import Accounts from "./pages/accounts/Accounts";
+import Home from "./pages/home/Home";
+import Scholars from "./pages/scholars/Scholars";
+import { ApiProvider } from "./context/ApiContext";
+
+const backendURL = process.env.API_URL || "http://localhost:5000";
 
 function App() {
   return (
     <HashRouter>
-      <AppProvider>
+      <ApiProvider apiBase={backendURL}>
         <Layout>
-          <Route path="/accounts/:ronin?" component={Accounts} />
-          {/* <Route path="/account/:ronin" component={AccountDetails} /> */}
+          <Route path="/home" component={Home} />
+          <Route path="/accounts" component={Accounts} />
+          <Route path="/scholars" component={Scholars} />
         </Layout>
-      </AppProvider>
+      </ApiProvider>
     </HashRouter>
   );
 }

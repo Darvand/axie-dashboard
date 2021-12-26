@@ -68,11 +68,80 @@ const Graph = ({ data, dimensions, valueKey, yAxisLabel }: Props) => {
       .line()
       .x((d) => xScale(d[0]))
       .y((d) => yScale(d[1]));
+    // const lg = svg
+    //   .append("defs")
+    //   .append("linearGradient")
+    //   .attr("id", "mygrad") //id of the gradient
+    //   .attr("x1", "0")
+    //   .attr("x2", "0%")
+    //   .attr("y1", yScale(1))
+    //   .attr("y2", yScale(300)); //since its a vertical linear gradient
+    // lg.append("stop")
+    //   .attr("offset", "0%")
+    //   .style("stop-color", "#5D7ADD") //end in red
+    //   .style("stop-opacity", 1);
+
+    // lg.append("stop")
+    //   .attr("offset", "100%")
+    //   .style("stop-color", "#16233C") //start in blue
+    //   .style("stop-opacity", 1);
+    const area = d3
+      .area()
+      .x((d) => {
+        return xScale(d[1]);
+      })
+      .y1((d) => {
+        return yScale(d[0]);
+      });
+    area.y0(yScale(0));
+    svg
+      .append("linearGradient")
+      .attr("id", "graph-gradient")
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", 0)
+      .attr("y1", yScale(d3.max(Y)! * 0.1))
+      .attr("x2", 0)
+      .attr("y2", yScale(d3.max(Y)! / 2))
+      .selectAll("stop")
+      .data([
+        {
+          offset: "0%",
+          color: "#16233C",
+        },
+        {
+          offset: "100%",
+          color: "#5D7ADD",
+        },
+      ])
+      .enter()
+      .append("stop")
+      .attr("offset", function (d) {
+        return d.offset;
+      })
+      .attr("stop-color", function (d) {
+        return d.color;
+      })
+      .attr("stop-opacity", 0.5);
     svg
       .append("path")
+      .datum(data.map(({ [valueKey]: value, date }) => [date, value]))
+      .attr("fill", "url(#graph-gradient")
+      .attr(
+        "d",
+        d3.area(
+          (d) => xScale(d[0]),
+          yScale(0),
+          (d) => yScale(d[1])
+        )
+      );
+    svg
+      .append("path")
+      .datum(data.map(({ [valueKey]: value, date }) => [date, value]))
       .attr("fill", "none")
       .attr("stroke", "#5D7ADD")
-      .attr("stroke-width", 3)
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1.5)
       .attr(
         "d",
         line(data.map(({ [valueKey]: value, date }) => [date, value]))

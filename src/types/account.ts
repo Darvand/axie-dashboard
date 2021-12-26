@@ -1,6 +1,4 @@
-import { DailyResponse } from "./daily";
-
-export interface AccountResponse {
+export interface Account {
   scholar: {
     name: string;
   };
@@ -14,5 +12,4 @@ export interface AccountResponse {
   rank: number;
   lastClaim: number;
   nextClaim: number;
-  accountDaily: DailyResponse[];
 }
