@@ -5,6 +5,7 @@ export enum AccountsAction {
   ERROR = "ERROR_ACCOUNTS",
   SUCCESS = "SUCCESS_ACCOUNTS",
   CREATE_ACCOUNT = "CREATE_ACCOUNT",
+  ADD_ACCOUNT = "ADD_ACCOUNT",
 }
 
 export interface RequestAccountsAction {
@@ -21,6 +22,11 @@ export interface CreateAccountAction {
   payload: { account: Account };
 }
 
+export interface AddAccountAction {
+  type: AccountsAction.ADD_ACCOUNT;
+  payload: { account: Account };
+}
+
 export interface ErrorAccountAction {
   type: AccountsAction.ERROR;
   payload: { error: unknown };
@@ -30,4 +36,5 @@ export type AccountsActionType =
   | RequestAccountsAction
   | SuccessAccountsAction
   | CreateAccountAction
+  | AddAccountAction
   | ErrorAccountAction;

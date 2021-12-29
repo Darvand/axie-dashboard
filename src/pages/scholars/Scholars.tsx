@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Table from "../../components/table/Table";
+import { useScholars } from "../../hooks/useScholars";
 import { useScholarsAPI } from "../../hooks/useScholarshipsAPI";
+import CreateScholar from "./CreateScholar";
 
 interface Props {}
 
 const Scholars = (props: Props) => {
-  const { scholars, loading, error } = useScholarsAPI();
+  const { scholars, fetchScholars, isLoading, error } = useScholars();
+  useEffect(() => {
+    fetchScholars();
+  }, [fetchScholars]);
   const columns = [
     {
       Header: "Becado",
@@ -21,9 +26,11 @@ const Scholars = (props: Props) => {
       accessor: "entryDate",
     },
   ];
-  if (loading) return <div></div>;
+  if (isLoading) return <div></div>;
+  if (error) return <div>error: {error}</div>;
   return (
     <div>
+      <CreateScholar />
       <Table data={scholars} columns={columns} />
     </div>
   );

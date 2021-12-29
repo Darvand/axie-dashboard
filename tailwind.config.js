@@ -13,6 +13,9 @@ module.exports = {
       },
       transitionProperty: {
         'max-height': 'max-height'
+      },
+      gridTemplateColumns: {
+        '2/3': '2fr 1fr'
       }
     },
     colors: {
@@ -23,7 +26,9 @@ module.exports = {
       'primary-text': '#E7E8EB',
       'secondary-text': '#626A81',
       active: '#5D7ADD',
-      error: colors.red
+      error: colors.red,
+      blue: '#1C4587',
+      white: colors.white
     },
   },
   variants: {

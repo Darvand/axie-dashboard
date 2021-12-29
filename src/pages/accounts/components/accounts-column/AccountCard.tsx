@@ -1,7 +1,6 @@
 import React from "react";
 import { useHistory, useParams } from "react-router";
 import { Account } from "../../../../types/account";
-import { AccountResponse } from "../../../../types/requests/account";
 
 interface Props {
   account: Account;
@@ -32,7 +31,9 @@ const AccountCard = ({ account }: Props) => {
         <span>SLP</span>
       </div>
       <div className=" flex flex-col">
-        <h1 className="text-primary-text text-lg">{account.scholar.name}</h1>
+        <h1 className="text-primary-text text-lg">
+          {account.scholar?.name || "Sin asociar"}
+        </h1>
         <p
           className={`text-base group-hover:text-primary-text ${
             isSelected ? "text-primary-text " : "text-secondary-text "

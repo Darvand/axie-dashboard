@@ -17,10 +17,7 @@ import { useParams } from "react-router-dom";
 import { useDaily } from "../../../../hooks/useDaily";
 import { useAccounts } from "../../../../hooks/useAccounts";
 import { Account } from "../../../../types/account";
-
-interface Props {
-  accounts: Account[];
-}
+import { useAccountsContext } from "../../../../context/AccountsContext";
 
 const COLUMN_HEADERS = [
   "Dia",
@@ -51,7 +48,8 @@ const dimensions = {
 
 type GraphTypes = "slp" | "mmr";
 
-const AccountDetails = ({ accounts }: Props) => {
+const AccountDetails = () => {
+  const { accounts } = useAccountsContext();
   const { ronin } = useParams<{ ronin: string }>();
   const { daily, isLoading, error, fetchDaily } = useDaily(ronin);
   useEffect(() => {
@@ -60,10 +58,10 @@ const AccountDetails = ({ accounts }: Props) => {
   const [graph, setGraph] = useState<GraphTypes>("slp");
   if (isLoading) return <div>Esta cargando</div>;
   if (error) return <div>Error: {error}</div>;
-  console.log("daily", daily, ronin);
+  console.log("accounts", accounts.length);
   const [account] = accounts.filter((acc) => acc.roninAddress === ronin);
-  const accountDetail = calculateDaily(account, daily);
   if (!account) return <div></div>;
+  const accountDetail = calculateDaily(account, daily);
   const getButtonClassByGraph = (button: GraphTypes) =>
     `w-20 rounded py-1 ${
       graph === button ? "font-bold bg-active" : "hover:font-bold"
@@ -82,7 +80,7 @@ const AccountDetails = ({ accounts }: Props) => {
       <div className="flex flex-col gap-8 ">
         <div className="flex flex-col">
           <h1 className="text-4xl text-primary-text font-bold">
-            {account.scholar.name}
+            {account.scholar?.name || "Sin asociar"}
           </h1>
           <h2 className="text-secondary-text text-base">
             {account.roninAddress}

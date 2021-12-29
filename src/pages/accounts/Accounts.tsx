@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Route, Switch, useParams } from "react-router-dom";
+import { AccountsProvider } from "../../context/AccountsContext";
 import { useAccounts } from "../../hooks/useAccounts";
 
 import { AppContext } from "../../store/context";
@@ -10,24 +11,16 @@ import CreateAccount from "./components/create-account/CreateAccount";
 interface Props {}
 
 const Accounts = (props: Props) => {
-  const { accounts, fetchAccounts, isLoading, error } = useAccounts();
-  useEffect(() => {
-    fetchAccounts();
-  }, [fetchAccounts]);
+  const { isLoading, error } = useAccounts();
   if (isLoading) return <div>Esta cargando</div>;
   if (error) return <div>Error: {error}</div>;
-  console.log("is l;oading", isLoading);
-  console.log("it pass here", accounts.length);
   return (
     <div className="flex h-full">
-      <AccountsColumn accounts={accounts} />
+      <AccountsColumn />
       <div className=" py-4 px-8 overflow-auto w-full flex justify-center">
         <Switch>
           <Route path={"/accounts/create"} component={CreateAccount} exact />
-          <Route
-            path={"/accounts/:ronin"}
-            render={() => <AccountDetails accounts={accounts} />}
-          />
+          <Route path={"/accounts/:ronin"} render={() => <AccountDetails />} />
         </Switch>
       </div>
     </div>

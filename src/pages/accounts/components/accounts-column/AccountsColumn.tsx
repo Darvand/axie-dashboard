@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 
 import { AiOutlinePlus } from "react-icons/ai";
-import { Account } from "../../../../types/account";
+import { useHistory } from "react-router-dom";
+import { useAccountsContext } from "../../../../context/AccountsContext";
 import AccountCard from "./AccountCard";
 import Dropdown from "./Dropdown";
 
-interface Props {
-  accounts: Account[];
-}
-
-const AccountsColumn = ({ accounts }: Props) => {
+const AccountsColumn = () => {
+  const { accounts } = useAccountsContext();
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+  const history = useHistory();
   const addGroupToSearch = (group: string) => {
     if (selectedGroups.some((selected) => selected === group)) {
       return;
@@ -37,6 +36,7 @@ const AccountsColumn = ({ accounts }: Props) => {
         <div
           className="w-full px-4 py-4 bg-primary text-primary-text
             cursor-pointer text-xl flex justify-center hover:bg-active"
+          onClick={() => history.replace("/accounts/create")}
         >
           <AiOutlinePlus />
         </div>
