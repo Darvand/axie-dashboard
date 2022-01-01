@@ -12,7 +12,6 @@ const CreateDaily = (props: Props) => {
   const { ronin } = useParams<{ ronin: string }>();
   const { accounts } = useAccountsContext();
   const history = useHistory();
-  const [account] = accounts.filter((acc) => acc.roninAddress === ronin);
   const methods = useForm({
     shouldFocusError: false,
     defaultValues,
@@ -20,7 +19,7 @@ const CreateDaily = (props: Props) => {
   const onSubmit = async (data: typeof defaultValues) => {};
   const onError = (errors: any) => console.log(errors);
   return (
-    <div className="w-3/4 flex justify-center items-center">
+    <div className="w-[400px] flex justify-center items-center">
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit, onError)}
@@ -45,7 +44,7 @@ const CreateDaily = (props: Props) => {
             <Input name="dayMMR" label="Copas/Dia" type="number" required />
             <Input name="mmr" label="MMR" type="number" required />
           </section>
-          <div className="w-full flex justify-end items-center mt-8 gap-10">
+          <div className="w-full flex justify-center items-center mt-8 gap-10">
             <button
               className="border border-active text-active text-sm px-3 w-36 rounded h-8"
               onClick={() => history.goBack()}

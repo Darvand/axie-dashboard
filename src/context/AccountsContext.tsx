@@ -11,14 +11,13 @@ export const AccountsContext = createContext(initialState);
 export const useAccountsContext = () => useContext(AccountsContext);
 
 export const AccountsProvider = ({ children }: AccountsProviderProps) => {
-  const accountsUsage = useAccounts();
-  const { fetchAccounts, accounts, isLoading } = accountsUsage;
+  const { fetchAccounts, isLoading, ...useAccountsResult } = useAccounts();
   useEffect(() => {
     fetchAccounts();
   }, [fetchAccounts]);
   if (isLoading) <div>cuentas cargando</div>;
   return (
-    <AccountsContext.Provider value={accountsUsage}>
+    <AccountsContext.Provider value={{ isLoading, ...useAccountsResult }}>
       {children}
     </AccountsContext.Provider>
   );

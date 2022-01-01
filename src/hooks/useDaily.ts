@@ -1,4 +1,5 @@
 import { useCallback, useContext } from "react";
+import { useAccountsContext } from "../context/AccountsContext";
 import { ApiContext } from "../context/ApiContext";
 import { DailyAction } from "../reducers/daily/actions";
 import { useDailyReducer } from "../reducers/daily/useDailyReducer";
@@ -6,6 +7,7 @@ import { Daily } from "../types/daily";
 
 export const useDaily = (ronin: string) => {
   const apiHandler = useContext(ApiContext);
+  const { accounts } = useAccountsContext();
 
   const [state, dispatch] = useDailyReducer();
 

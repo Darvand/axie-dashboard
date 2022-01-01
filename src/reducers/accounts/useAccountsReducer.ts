@@ -28,12 +28,6 @@ export const reducer = (
     }
     case AccountsAction.SUCCESS: {
       const { accounts } = action.payload;
-      console.log(
-        "last accounts",
-        state.accounts.length,
-        "new accounts",
-        accounts.length
-      );
       return {
         ...state,
         isLoading: false,

@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { Dispatch } from "react";
+import { Account } from "../../types/account";
 import { Daily } from "../../types/daily";
 import { useApiReducer } from "../api/useApiReducer";
 import { DailyAction, DailyActionType } from "./actions";
@@ -8,6 +9,7 @@ export interface DailyState {
   error: unknown;
   isLoading: boolean;
   daily: Daily[];
+  account?: Account;
 }
 
 export const initialState: DailyState = {

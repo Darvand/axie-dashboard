@@ -12,7 +12,7 @@ const useOutside = (ref: any, onClose: Props["onClose"]) => {
      * Alert if clicked on outside of element
      */
     function handleClickOutside(event: Event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (ref.current && ref.current === event.target) {
         console.log("click outside");
         onClose();
       }
@@ -39,7 +39,7 @@ const Modal = ({ children, show, onClose }: Props) => {
       style={{ background: "rgba(0,0,0,0.8)" }}
       ref={ref}
     >
-      <div className="">{children}</div>
+      {children}
     </div>
   );
 };
