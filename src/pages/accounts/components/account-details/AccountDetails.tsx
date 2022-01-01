@@ -18,6 +18,7 @@ import { useDaily } from "../../../../hooks/useDaily";
 import { useAccounts } from "../../../../hooks/useAccounts";
 import { Account } from "../../../../types/account";
 import { useAccountsContext } from "../../../../context/AccountsContext";
+import { Daily } from "../../../../types/daily";
 
 const COLUMN_HEADERS = [
   "Dia",
@@ -33,20 +34,29 @@ const COLUMN_HEADERS = [
   "Aventuras",
 ];
 
-COLUMN_HEADERS.reduce((accum, item) => {
-  if (item.match(/.Nike./)) {
-    accum++;
-  }
-  return accum;
-}, 0);
-
 const dimensions = {
-  width: 800,
-  height: 400,
-  margin: { top: 30, right: 50, bottom: 30, left: 10 },
+  width: 830,
+  height: 340,
+  margin: { top: 50, right: 0, bottom: 50, left: 0 },
 };
 
-type GraphTypes = "slp" | "mmr";
+type GraphTypes = "daySLP" | "mmr";
+
+const getDailySLP = (daily: Daily[], key: GraphTypes) => {
+  let days = 1;
+  const data = [];
+  while (days < 16) {
+    const date = DateTime.now().minus({ days });
+    const dailySLP = daily
+      .map((day) => ({ ...day, date: DateTime.fromISO(day.date.toString()) }))
+      .find(
+        (day) => day.date.day === date.day && day.date.month === date.month
+      );
+    data.push({ date: date.toFormat("MM/dd"), value: dailySLP?.[key] || 0 });
+    days++;
+  }
+  return data.reverse();
+};
 
 const AccountDetails = () => {
   const { accounts } = useAccountsContext();
@@ -55,31 +65,23 @@ const AccountDetails = () => {
   useEffect(() => {
     fetchDaily();
   }, [fetchDaily, ronin]);
-  const [graph, setGraph] = useState<GraphTypes>("slp");
+  const [graph, setGraph] = useState<GraphTypes>("daySLP");
   if (isLoading) return <div>Esta cargando</div>;
   if (error) return <div>Error: {error}</div>;
-  console.log("accounts", accounts.length);
   const [account] = accounts.filter((acc) => acc.roninAddress === ronin);
   if (!account) return <div></div>;
-  const accountDetail = calculateDaily(account, daily);
   const getButtonClassByGraph = (button: GraphTypes) =>
     `w-20 rounded py-1 ${
-      graph === button ? "font-bold bg-active" : "hover:font-bold"
+      graph === button ? "text-active border border-active" : "hover:font-bold"
     }`;
-  const isPayable =
-    DateTime.now() > DateTime.fromFormat(accountDetail.lastClaim, "yyyy-MM-dd");
-  const dailySLP = daily
-    .map((d) => ({
-      slp: d.daySLP,
-      mmr: d.dayMMR,
-      date: DateTime.fromISO(d.date.toString()).toMillis(),
-    }))
-    .sort((prev, next) => prev.date - next.date);
+  const graphSLPData = getDailySLP(daily, "daySLP");
+  const graphMMRData = getDailySLP(daily, "mmr");
+  console.log("graphSLPData", graphSLPData);
   return (
     <div className="">
       <div className="flex flex-col gap-8 ">
         <div className="flex flex-col">
-          <h1 className="text-4xl text-primary-text font-bold">
+          <h1 className="text-2xl text-active">
             {account.scholar?.name || "Sin asociar"}
           </h1>
           <h2 className="text-secondary-text text-base">
@@ -87,40 +89,15 @@ const AccountDetails = () => {
           </h2>
         </div>
         <div className="flex gap-8">
-          <CardContainer
-            Icon={SLPIcon}
-            title="Promedio"
-            titleValue={`${accountDetail.averageSLP} SLP`}
-            rows={[
-              <RowItem
-                title="En ronin"
-                value={`${accountDetail.roninSLP} SLP`}
-              />,
-              <RowItem
-                title="En juego"
-                value={`${accountDetail.inGameSLP} SLP`}
-              />,
-            ]}
-          />
-          <CardContainer
-            Icon={<FaWallet className="text-secondary-text text-3xl" />}
-            title="Pago"
-            titleValue={`${accountDetail.nextPayment} SLP`}
-            rows={[
-              <RowItem
-                title="Proximo pago"
-                value={isPayable ? "Disponible" : accountDetail.nextClaim}
-                isStatus={isPayable}
-              />,
-              <RowItem title="Ultimo pago" value={accountDetail.lastClaim} />,
-            ]}
-          />
+          <CardContainer title="Porcentaje de pago" value="40" unit="%" />
+          <CardContainer title="Promedio diario" value="120" unit="SLP" />
+          <CardContainer title="Proximo pago" value="1500" unit="SLP" special />
         </div>
         <section>
-          <div className="flex gap-2 text-base text-primary-text">
+          <div className="flex gap-2 text-sm text-primary-text">
             <button
-              className={getButtonClassByGraph("slp")}
-              onClick={() => setGraph("slp")}
+              className={getButtonClassByGraph("daySLP")}
+              onClick={() => setGraph("daySLP")}
             >
               SLP
             </button>
@@ -134,7 +111,7 @@ const AccountDetails = () => {
           {
             <Graph
               dimensions={dimensions}
-              data={dailySLP}
+              data={graph === "daySLP" ? graphSLPData : graphMMRData}
               valueKey={graph}
               yAxisLabel={graph.toUpperCase()}
             />

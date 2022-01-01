@@ -16,16 +16,20 @@ module.exports = {
       },
       gridTemplateColumns: {
         '2/3': '2fr 1fr'
+      },
+      fontFamily: {
+        'sans': ['Roboto', 'sans-serif'],
+        'montserrat': ['Montserrat', 'sans-serif']
       }
     },
     colors: {
       gray: colors.coolGray,
-      primary: '#16233C',
-      secondary: '#2C4059',
-      third: '#3F4966',
-      'primary-text': '#E7E8EB',
+      primary: '#363E59',
+      secondary: '#51658C',
+      third: '#7E9ABF',
+      'primary-text': '#B8C6D9',
       'secondary-text': '#626A81',
-      active: '#5D7ADD',
+      active: '#9BF2EA',
       error: colors.red,
       blue: '#1C4587',
       white: colors.white

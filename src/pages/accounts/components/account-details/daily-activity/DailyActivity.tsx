@@ -29,7 +29,6 @@ const DailyActivity = ({ daily, ronin }: Props) => {
   const [data, setData] = useState<DailyWithDateString[]>(createData(daily));
   return (
     <section className="mt-10 flex flex-col text-primary-text">
-      <h1 className="text-2xl font-bold">Actividad diaria</h1>
       <DailyActivityTable data={data} setData={setData} ronin={ronin} />
     </section>
   );

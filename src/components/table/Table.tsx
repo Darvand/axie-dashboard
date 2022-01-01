@@ -1,101 +1,85 @@
 import React, { useMemo } from "react";
-import { useTable } from "react-table";
-import InsertRow from "./InsertRow";
-
-type UpdateData = (rowIndex: number, columnId: string, value: any) => void;
-
-declare module "react-table" {
-  interface TableOptions<D extends object> {
-    updateData?: UpdateData;
-    skipPageReset?: boolean;
-  }
-}
+import { FaTrash } from "react-icons/fa";
+import { MdModeEditOutline, MdNavigateNext } from "react-icons/md";
+import { Row, usePagination, useTable } from "react-table";
 
 interface Props {
   data: any[];
   columns: { Header: string; accessor: string }[];
-  updateData?: UpdateData;
-  skipPageReset?: boolean;
-  onInsert?: (data: any) => void;
+  onCreate?: () => void;
+  onDelete?: (value: any) => void;
+  onEdit?: (value: any) => void;
 }
 
-interface EditableCellProps {
+interface ActionCellProps {
+  onDelete: (value: any) => void;
+  onEdit: (value: any) => void;
   value: any;
-  row: { index: number };
-  column: { id: string };
-  updateData: UpdateData;
 }
 
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateData, // This is a custom function that we supplied to our table instance
-}: EditableCellProps) => {
-  // We need to keep and update the state of the cell normally
-  const [value, setValue] = React.useState(initialValue);
-
-  const onChange = (e: { target: { value: any } }) => {
-    setValue(e.target.value);
-  };
-
-  const onBlur = () => {
-    updateData(index, id, value);
-  };
-
-  React.useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
+const ActionCell = ({ onDelete, onEdit, value }: ActionCellProps) => {
   return (
-    <input
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      className="bg-third text-center py-4 outline-none w-full"
-    />
+    <div className="flex gap-5">
+      <MdModeEditOutline
+        onClick={() => onEdit(value)}
+        className="text-lg cursor-pointer hover:text-active"
+      />
+      <FaTrash
+        onClick={() => onDelete(value)}
+        className="text-lg cursor-pointer hover:text-active"
+      />
+    </div>
   );
-};
-
-const defaultColumn = {
-  Cell: EditableCell,
 };
 
 const Table = ({
   data,
   columns,
-  updateData,
-  skipPageReset,
-  onInsert,
+  onCreate = () => null,
+  onDelete = () => null,
+  onEdit = () => null,
 }: Props) => {
   const memoData = useMemo(() => data, [data]);
   const memoColumns = useMemo(
-    () =>
-      onInsert
-        ? [...columns, { Header: "Accion", accesor: "action" }]
-        : columns,
-    [columns, onInsert]
+    () => [
+      ...columns,
+      {
+        Header: "Accion",
+        accesor: "action",
+        Cell: ({ original }: Row) => (
+          <ActionCell onDelete={onDelete} onEdit={onEdit} value={original} />
+        ),
+      },
+    ],
+    [columns]
   );
-  const tableOptions = updateData
-    ? {
-        columns: memoColumns,
-        data: memoData,
-        defaultColumn,
-        updateData,
-        skipPageReset,
-      }
-    : { columns: memoColumns, data: memoData };
-  const tableInstance = useTable(tableOptions);
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    tableInstance;
+  const tableInstance = useTable(
+    {
+      columns: memoColumns,
+      data: memoData,
+      initialState: { pageSize: 15 },
+    },
+    usePagination
+  );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    nextPage,
+    previousPage,
+    pageOptions,
+    state: { pageIndex },
+  } = tableInstance;
   return (
-    <div className="">
+    <div>
       <table {...getTableProps()} className="w-full">
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr
               {...headerGroup.getHeaderGroupProps()}
-              className={`text-primary-text text-sm text-center uppercase font-bold rounded-t bg-active grid grid-cols-${headerGroup.headers.length} p-4`}
+              className={`bg-secondary text-sm text-primary-text grid grid-cols-${headerGroup.headers.length} px-3 h-14 flex justify-center items-center`}
             >
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
@@ -103,22 +87,26 @@ const Table = ({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()} className="text-primary-text text-base">
-          {onInsert && (
-            <tr>
-              <InsertRow columns={columns} onSubmit={onInsert} />
-            </tr>
-          )}
-          {rows.map((row) => {
+        <tbody {...getTableBodyProps()} className="text-primary-text text-sm">
+          {page.map((row) => {
             prepareRow(row);
             return (
               <tr
                 {...row.getRowProps()}
-                className={`bg-third text-center py-2 grid grid-cols-${row.cells.length}`}
+                className={`h-14 px-3 group
+                border border-primary rounded
+                hover:border-primary-text 
+                hover:bg-primary-text hover:bg-opacity-10
+                grid grid-cols-${row.cells.length}`}
               >
                 {row.cells.map((cell) => {
                   return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    <td
+                      {...cell.getCellProps()}
+                      className="flex justify-center items-center"
+                    >
+                      {cell.render("Cell")}
+                    </td>
                   );
                 })}
               </tr>
@@ -126,6 +114,32 @@ const Table = ({
           })}
         </tbody>
       </table>
+      <div className="h-14 flex justify-between items-center w-full px-3">
+        <button
+          className="border border-active text-active text-sm px-3 w-36 rounded h-8"
+          onClick={() => onCreate()}
+        >
+          Nuevo registro
+        </button>
+        <div className="flex items-center justify-between gap-4 mr-4">
+          <button
+            className=" h-8 text-active flex justify-center items-center"
+            style={{ transform: "scaleX(-1)" }}
+            onClick={() => previousPage()}
+          >
+            <MdNavigateNext className="text-active text-3xl cursor-pointer" />
+          </button>
+          <span className="">
+            {pageIndex + 1} de {pageOptions.length}
+          </span>
+          <button
+            className=" h-8 text-active flex justify-center items-center"
+            onClick={() => nextPage()}
+          >
+            <MdNavigateNext className="text-active text-3xl cursor-pointer" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

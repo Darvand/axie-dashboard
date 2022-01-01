@@ -2,27 +2,36 @@ import React, { ReactElement, ReactNode } from "react";
 import { RowItemProps } from "./RowItem";
 
 interface Props {
-  Icon: ReactNode;
   title: string;
-  titleValue: string;
-  rows: ReactElement<RowItemProps>[];
+  value: string | number;
+  unit: string;
+  special?: boolean;
 }
 
-const CardContainer = ({ Icon, title, titleValue, rows }: Props) => {
+const CardContainer = ({ title, value, unit, special = false }: Props) => {
+  console.log(title, special);
   return (
-    <div className="w-60 border border-solid border-third ">
-      <div className="flex items-center border-b border-solid border-third">
-        <div className="bg-secondary w-20 h-20 flex items-center justify-center">
-          {Icon}
-        </div>
-        <div className="flex flex-col px-4">
-          <h2 className="text-secondary-text font-bold text-base">{title}</h2>
-          <h1 className="text-lg text-primary-text font-bold">{titleValue}</h1>
+    <section className="flex items-center font-montserrat">
+      <span className="bg-active w-1 h-28 rounded"></span>
+      <div
+        className={`bg-secondary w-52 h-24 flex-col px-5 py-4 rounded-r gap-3 ${
+          special ? "text-primary" : "text-white"
+        }`}
+        style={
+          special
+            ? {
+                background: "linear-gradient(90deg, #9BF2EA 0%, #B8C6D9 12%)",
+              }
+            : {}
+        }
+      >
+        <h3 className="text-base">{title}</h3>
+        <div className="flex justify-end items-end gap-1">
+          <p className="font-bold text-3xl">{value}</p>
+          <span className="text-lg font-bold">{unit}</span>
         </div>
       </div>
-      <ul className="p-4 flex flex-col gap-2 ">{rows}</ul>
-    </div>
+    </section>
   );
 };
-
 export default CardContainer;

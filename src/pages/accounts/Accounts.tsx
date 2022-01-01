@@ -7,6 +7,7 @@ import { AppContext } from "../../store/context";
 import AccountDetails from "./components/account-details/AccountDetails";
 import AccountsColumn from "./components/accounts-column/AccountsColumn";
 import CreateAccount from "./components/create-account/CreateAccount";
+import CreateDaily from "./components/create-daily/CreateDaily";
 
 interface Props {}
 
@@ -15,12 +16,19 @@ const Accounts = (props: Props) => {
   if (isLoading) return <div>Esta cargando</div>;
   if (error) return <div>Error: {error}</div>;
   return (
-    <div className="flex h-full">
-      <AccountsColumn />
-      <div className=" py-4 px-8 overflow-auto w-full flex justify-center">
+    <div className="flex h-full justify-center">
+      <div
+        className=" py-4 overflow-auto flex justify-center w-[830px]"
+        style={{ width: "830px" }}
+      >
         <Switch>
           <Route path={"/accounts/create"} component={CreateAccount} exact />
-          <Route path={"/accounts/:ronin"} render={() => <AccountDetails />} />
+          <Route
+            path={"/accounts/:ronin/create"}
+            component={CreateDaily}
+            exact
+          />
+          <Route path={"/accounts/:ronin"} component={AccountDetails} />
         </Switch>
       </div>
     </div>

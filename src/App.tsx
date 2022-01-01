@@ -8,6 +8,7 @@ import Home from "./pages/home/Home";
 import Scholars from "./pages/scholars/Scholars";
 import { ApiProvider } from "./context/ApiContext";
 import { AccountsProvider } from "./context/AccountsContext";
+import Axie from "./components/Axie";
 
 const backendURL = process.env.API_URL || "http://localhost:5000";
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/home" component={Home} />
             <Route path="/accounts" component={Accounts} />
             <Route path="/scholars" component={Scholars} />
+            <Route path="/axie" component={Axie} />
           </Layout>
         </AccountsProvider>
       </ApiProvider>

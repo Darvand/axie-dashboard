@@ -25,7 +25,7 @@ const dimensions = {
 
 const getDailyProduction = (accounts: AccountResponse[]) => {
   let today = DateTime.utc();
-  const dailyAverage: { average: number; date: number }[] = [];
+  const dailyAverage: { value: number; date: string }[] = [];
   const largeDaily = accounts.reduce(
     (max, current) =>
       current.accountDaily.length > max ? current.accountDaily.length : max,
@@ -46,7 +46,7 @@ const getDailyProduction = (accounts: AccountResponse[]) => {
         .filter((daily) => daily.length > 0)
         .map((daily) => daily[0]);
       const average = days.reduce((accum, day) => accum + day.daySLP, 0);
-      dailyAverage.push({ average, date: day.toMillis() });
+      dailyAverage.push({ value: average, date: day.toISODate() });
     });
   return dailyAverage;
 };
